@@ -52,67 +52,67 @@ INSERT INTO registration (student_id, course_id, registration_date, grade) VALUE
 (1, 4, '2023-09-01', NULL);  -- Alice registered for HIST101
 
 
--- 3
+-- 3 Select the last name of all students.
 SELECT last_name FROM students;
 
---4
+--4 Select the last name of all students, without duplicates.
 SELECT DISTINCT last_name FROM students;
 
---5
+--5 Select all data of students whose last name is "Johnson."
 SELECT * FROM students WHERE last_name = 'Johnson';
 
---6
+--6 Select all data of students whose last name is "Johnson" or "Smith."
 SELECT * FROM students WHERE last_name = 'Johnson' or last_name = 'Smith';
 
---7
-SELECT * FROM students
-JOIN registration r on students.student_id = r.student_id
+--7 Select all data of students who are registered in the "CS101" course.
+SELECT * FROM students s
+JOIN registration r on s.student_id = r.student_id
 JOIN courses c on c.course_id = r.course_id
 WHERE course_code = 'CS101';
 
---8
-SELECT * FROM students
-JOIN registration r on students.student_id = r.student_id
+--8 Select all data of students who are registered in the "MATH201" or "PHYS301" courses.
+SELECT * FROM students s
+JOIN registration r on s.student_id = r.student_id
 JOIN courses c on c.course_id = r.course_id
 WHERE course_code = 'MATH201' or course_code='PHYS301';
 
---9
+--9 Select the total number of credits for all courses.
 SELECT SUM(credits) AS total_credits FROM courses;
 
---10
+--10 Select the number of students registered for each course. Show the course ID and the number of students. (Use the COUNT(*) operator for counting the number of students.)
 SELECT c.course_id, COUNT(r.student_id) AS student_count
 FROM courses c
 JOIN registration r ON c.course_id = r.course_id
 GROUP BY c.course_id;
 
---11
+--11 Select the course ID with more than 2 students registered.
 SELECT c.course_id FROM courses c
 JOIN registration r on c.course_id = r.course_id
 GROUP BY c.course_id
 HAVING COUNT(r.student_id)>2 ;
 
---12
+--12 Select the course name with the second-highest number of credits.
 SELECT course_name
 FROM courses
 ORDER BY credits DESC
 LIMIT 1 OFFSET 1;
 
---13
+--13 Select the first and last names of students registered in the course with the fewest credits.
 SELECT s.first_name, s.last_name
 FROM students s
 JOIN registration r ON s.student_id = r.student_id
 JOIN courses c ON r.course_id = c.course_id
 WHERE c.credits = (SELECT MIN(credits) FROM courses);
 
---14
+--14 Select the first and last names of all students from Almaty
 SELECT first_name, last_name FROM students WHERE city = 'Almaty';
 
---15
+--15 Select all courses with more than 3 credits, sorted by increasing credits and decreasing course ID
 SELECT * FROM courses
 WHERE credits > 3
 ORDER BY credits ASC, course_id DESC;
 
---16
+--16 Decrease the number of credits for the course with the fewest credits by 1.
 UPDATE courses
 SET credits = credits - 1
 WHERE course_id = (
@@ -122,17 +122,17 @@ WHERE course_id = (
     LIMIT 1
 );
 
---17
+--17 Reassign all students from the "MATH201" course to the "CS101 course.
 UPDATE registration
 SET course_id = (SELECT course_id FROM courses WHERE course_code = 'CS101')
 WHERE course_id = (SELECT course_id FROM courses WHERE course_code = 'MATH201');
 
 
---18
+--18 Delete from the table all students registered for the "CS101" course.
 DELETE FROM registration
 WHERE course_id = (SELECT course_id FROM courses WHERE course_code = 'CS101');
 
---19
+--19 Delete all students from the database.
 DELETE FROM students;
 
 
